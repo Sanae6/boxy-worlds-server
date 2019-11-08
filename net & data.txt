@@ -1,0 +1,75 @@
+a documentation of the network protocol that the game runs on
+that and some server-side data storage docs
+
+spawn positions are u16 because hell if i let them start outside of the range of a signed 16 bit integer
+message framing:
+length u16
+opcode u16
+message n-sized size
+
+
+from server:
+	start: 0
+		i16 = x
+		i16 = y
+		u32 = player's entity id 
+	chunk data: 1
+		i64 = x
+		i64 = y
+		u8*(16^2) = boxes
+		todo when implementing dynamic boxes:
+		u16 = instance style tile count
+		u8*n = arrays of data for instances
+	create entity: 2
+		u8 = type
+		u32 = id
+		f64 = x
+		f64 = y
+		f64 = facing
+		f64 = rotation
+		i16 = health
+		str = name - if end of packet, it's ignored
+	entity move: 3
+		u32 = id
+		u8 = action - 0 = set motion towards - 1 = teleport
+		f64 = tox
+		f64 = toy
+		f64 = facing/rotation
+	kick: 4
+		u8 = is error 
+		str = reason
+	ack login: 5
+		u8 = successful? - kicks on no
+	entity destroy: 6 - destroyed the entity on serverside so destroy it on the clientside too
+		
+from player:
+	move: 0
+		f64 = direction
+		u8 = should move
+	login: 1
+		str = name
+		u8 = has password - used for secured saving - 
+			if in database and password not provided, kick user with reason "Password not provided for user."
+		str = hashed password - hashed by user obviously - salt is B5W9%*j*7s!^ or preferably regenerate this 
+			later when i'm actually doing passwords
+	setpw: 2 - can only be used after login and user is authenticated
+		str = hashed password
+	log message: 3 - kicks the player when i'm not debugging
+		str = text
+	disconnect: 4
+		str = reason
+	start: 5 - respond to the start from server
+		u8 = debug - used to check if player is in debug mode
+	unloaded chunk | request chunk: 6 - unload chunk | request chunk
+		u8 = is request - else unload
+		i64 = x
+		i64 = y
+	use item: 7 - uses the item
+		u8 = slot
+instance data: (for network transfer and server-side storage)
+	storage: 
+		u8 = size (zero means one slot, providing up to 256 slots)
+		items:
+			u8 = slot
+			u16 = item
+			

@@ -1,0 +1,13 @@
+{
+    "name": "blockserver",
+    "description": "bruh",
+    "author": {
+        "name": "Austin Taylor",
+        "url": "https://sanae6.ca",
+        "email": "atmatm6000@outlook.com"
+    },
+    "dependencies": {
+        "binary-buffer-parser": "2.1.1"
+    },
+    "version": "1.0.0"
+}
