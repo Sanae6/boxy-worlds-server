@@ -32,24 +32,33 @@ while (x<=4){
 
 server.on("listen",(port)=>{
     console.log("Listening on port",port)
-    server.on("started",(player,dbg)=>{
-        player.on("item",(slot)=>{
-            console.log(slot);
-
-            player.sendEntity(new Arrow(player,))
-        })
-        if (dbg)console.log("player is in debug mode");
-        for(let x=-2;x<=2;x++)for(let y=-2;y<=2;y++){
-            let chunk = chunks.get(x+","+y);
-            //console.log(x,y,chunk.cx,chunk.cy)
-            player.sendChunk(chunk);
-            
-        }
-        //setTimeout(()=>player.kick("posting cringe"),10000);
-    });
 });
-server.on("tick",(tn)=>{//run entity collision detection 
+server.on("started",(player,dbg)=>{
+    if (dbg)console.log("player is in debug mode");
+    for(let x=-3;x<=3;x++)for(let y=-3;y<=3;y++){
+        let chunk = chunks.get(x+","+y);
+        //console.log(x,y,chunk.cx,chunk.cy)
+        player.sendChunk(chunk);
+        
+    }
+    //setTimeout(()=>player.kick("posting cringe"),10000);
+});
+server.on("useitem",(player,slot)=>{
+    console.log(slot);
+    player.sendEntity(new Arrow(player,++server.eid))
+});
+server.on("move",(player,x,y,f,d)=>{
+    console.log("moved",x,y,f,d)
+    player.x = x;
+    player.y = y;
+    player.f = f;
+    player.r = d;
+})
+server.on("tick",(tn)=>{//run any important entity stepping requirements - do NOT do collision, it'd be expensive and a massive waste of time and effort
     server.entities.forEach(entity => entity.step());
+})
+server.on("error",(player)=>{
+    console.log("ow")
 })
 
 server.listen();

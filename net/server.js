@@ -19,7 +19,8 @@ const BinaryParser = require('binary-buffer-parser');
  */
 class Server extends EventEmitter {
     /**
-     * @param {Object} options 
+     * @param {Object} options
+     * @fires Server#started 
      */
     constructor(options = {}) {
         super();
@@ -35,13 +36,13 @@ class Server extends EventEmitter {
          * @type {SpawnObject}
          */
         this.spawn = options.spawn || {
-            x:0,y:0,r:5
+            x:0,y:0,r:200
         }
         this.eid = -1;
         this.tickNum = 0;
         setInterval(() => {
             this.emit("tick", this.tickNum++);
-        }, 20);
+        }, 1/60);
         this._server = net.createServer((socket) => {
             let player = new Player(this, ++this.eid, socket);
             this.players.push(player);
@@ -51,18 +52,17 @@ class Server extends EventEmitter {
              */
             this.emit("player", player);
             socket.on("error",(err)=>{
-                console.error(err);
                 this.emit("error",player,err);
             })
             socket.on("data", (data) => {
                 let bp = new BinaryParser(data);
                 let len = bp.uint16();
-                console.log(len);
+                //console.log(len);
                 let op = bp.uint16();
-                console.log(op);
+                //console.log(op,op==7?"itemuse":"notitemuse");
                 switch (op) {
                     case 0://player movement
-                        this.emit("move", player, bp.double(), bp.uint8() == 1 ? true : false);
+                        this.emit("move", player, bp.double(), bp.double(), bp.int16(), bp.int16());
                         break;
                     case 1://set name
                         this.emit("login", player, bp.string0(), bp.uint8()==1?bp.string0():false);
@@ -90,6 +90,7 @@ class Server extends EventEmitter {
                         ,(bp.int32()<<8)|(bp.int32()&0xFF));
                         break;
                     case 7:
+                        console.log("used item");
                         this.emit("useitem",player,bp.uint8());
                         break;
                 }
@@ -107,9 +108,29 @@ class Server extends EventEmitter {
      */
     broadcast(buffer){
         
+    }  
+    //for documentation stuff
+    /**
+    * @param {eventsDef} args
+    */
+    addListener(...args) {
+        super.addListener(...args);
+    }
+ 
+   /**
+    * @param {eventsDef} args
+    */
+    on(...args) {
+        super.on(...args);
     }
 }
-
+/**
+ * @typedef {["started" | "listen" | "move" | "useitem", ...any[]]} eventsDef
+ */
+/**
+ * @event Server#started
+ * @type {Player|boolean}
+ */
 /**
  * @event Server#tick
  * @type {object}

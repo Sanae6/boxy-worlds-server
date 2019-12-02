@@ -8,6 +8,19 @@ function irandom(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
 }
 /**
+ * 
+ * @param {Player} r1 
+ * @param {Entity} r2 
+ * @param {number} dx distance surrounding the entity's point on the x axis
+ * @param {number} dy distance surrounding the entity's point on the y axis
+ */
+function intersectRect(r1, r2, dx, dy) {
+    return !(r2.x-dx > r1.x || 
+             r2.x+dx < r1.x || 
+             r2.y-dy > r1.y ||
+             r2.y+dy < r1.y);
+  }
+/**
  * @name Player
  * @extends Entity
  * @description A holder class for the player's data and socket
@@ -42,6 +55,9 @@ class Player extends Entity{
         start.writeUInt32LE(id,6);
         console.log(start);
         this.send(start);
+    }
+    step(){
+        
     }
     /**
      * Kicks the player with provided reason
@@ -99,7 +115,8 @@ class Player extends Entity{
      * @param {Entity} e
      */
     sendEntity(e){
-        let bu = Buffer.alloc()
+        if (intersectRect(this,e,1400,900))
+        this.send(e.dataFormat())
     }
     
     /**

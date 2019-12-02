@@ -10,3 +10,4 @@ class Arrow extends Entity{
         super(1,owner.x,owner.y,0,owner.f,owner.f,id,owner.server);
     }
 }
+module.exports = Arrow

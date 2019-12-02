@@ -7,6 +7,7 @@ length u16
 opcode u16
 message n-sized size
 
+str = u16(len) + u8*len
 
 from server:
 	start: 0
@@ -16,6 +17,7 @@ from server:
 	chunk data: 1
 		i64 = x
 		i64 = y
+		u8 = z
 		u8*(16^2) = boxes
 		todo when implementing dynamic boxes:
 		u16 = instance style tile count
@@ -31,21 +33,24 @@ from server:
 		str = name - if end of packet, it's ignored
 	entity move: 3
 		u32 = id
-		u8 = action - 0 = set motion towards - 1 = teleport
 		f64 = tox
 		f64 = toy
-		f64 = facing/rotation
+		f64 = facing
+		f64 = rotation
 	kick: 4
 		u8 = is error 
 		str = reason
 	ack login: 5
 		u8 = successful? - kicks on no
 	entity destroy: 6 - destroyed the entity on serverside so destroy it on the clientside too
-		
+		id = u32
+		killed = u8 - boolean: was killed or just disappeared - tells game whether to use memory for this
 from player:
 	move: 0
-		f64 = direction
-		u8 = should move
+		f64 = x
+		f64 = y
+		i16 = image rotation
+		i16 = direction
 	login: 1
 		str = name
 		u8 = has password - used for secured saving - 
@@ -66,6 +71,7 @@ from player:
 		i64 = y
 	use item: 7 - uses the item
 		u8 = slot
+
 instance data: (for network transfer and server-side storage)
 	storage: 
 		u8 = size (zero means one slot, providing up to 256 slots)
