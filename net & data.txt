@@ -30,13 +30,14 @@ from server:
 		f64 = facing
 		f64 = rotation
 		i16 = health
-		str = name - if end of packet, it's ignored
+		str = name - if end of packet, it's ignored - do it later, its not there right now
 	entity move: 3
 		u32 = id
 		f64 = tox
 		f64 = toy
 		f64 = facing
 		f64 = rotation
+		i16 = health
 	kick: 4
 		u8 = is error 
 		str = reason

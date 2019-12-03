@@ -35,12 +35,16 @@ class Player extends Entity{
     constructor(server,id,socket){
         super(0,irandom(server.spawn.x-server.spawn.r,
             server.spawn.x+server.spawn.r),irandom(server.spawn.y-server.spawn.r,
-                server.spawn.y+server.spawn.r),0,0,id,server);
+                server.spawn.y+server.spawn.r),20,0,0,id,server);
         /**
          * @name server
          * @type {Server}
          */
         this.server = server;
+        /**
+         * @name socket
+         * @type {Socket}
+         */
         this.socket = socket;
         this.authenticated = false;
         /**
@@ -55,9 +59,7 @@ class Player extends Entity{
         start.writeUInt32LE(id,6);
         console.log(start);
         this.send(start);
-    }
-    step(){
-        
+        this.broadcast(this.createDataFormat());
     }
     /**
      * Kicks the player with provided reason
@@ -116,7 +118,17 @@ class Player extends Entity{
      */
     sendEntity(e){
         if (intersectRect(this,e,1400,900))
-        this.send(e.dataFormat())
+        this.send(e.createDataFormat())
+    }
+
+    /**
+     * Broadcast to everyone else in the server
+     * @param {Buffer} b 
+     */
+    broadcast(b){
+        this.server.players.forEach((player)=>{
+            if (this != player) player.send(b);
+        })
     }
     
     /**
@@ -124,10 +136,13 @@ class Player extends Entity{
      * @param {Buffer} b 
      */
     send(b){
-        let buffer = Buffer.alloc(b.byteLength+2);
-        buffer.writeInt16LE(0,b.byteLength);
+        if (this.socket.destroyed) return;
+        let buffer = Buffer.alloc(b.length+2);
+        buffer.writeInt16LE(0,b.length);
         b.copy(buffer,2,0,b.length);
         this.socket.write(buffer);
     }
+
+    
 }
 module.exports = Player;

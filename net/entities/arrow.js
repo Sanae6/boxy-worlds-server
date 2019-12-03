@@ -8,6 +8,7 @@ class Arrow extends Entity{
      */
     constructor(owner,id){
         super(1,owner.x,owner.y,0,owner.f,owner.f,id,owner.server);
+        this.server.broadcast(this.createDataFormat());
     }
 }
 module.exports = Arrow

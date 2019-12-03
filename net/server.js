@@ -29,6 +29,10 @@ class Server extends EventEmitter {
          * @type {Entity[]}
          */
         this.entities = [];
+        /**
+         * @name players
+         * @type {Player[]}
+         */
         this.players = [];
         this.port = options.port || 3000;
         /**
@@ -46,13 +50,26 @@ class Server extends EventEmitter {
         this._server = net.createServer((socket) => {
             let player = new Player(this, ++this.eid, socket);
             this.players.push(player);
+            this.players.forEach(element => {
+                console.log(player.id,element.id)
+                if (player.id == element.id) return;
+                player.send(element.createDataFormat());
+            });
             /**
              * @event Server#player
              * @param {Player} player
              */
             this.emit("player", player);
             socket.on("error",(err)=>{
+                console.error(err);
                 this.emit("error",player,err);
+            })
+            socket.on("close",(iserr)=>{
+                if (iserr) console.error("damn it do be like that sometimes");
+                console.error("well whatever seeya");
+                player.broadcast(player.destroyDataFormat())
+                let pi = this.players.indexOf(player);
+                if (pi > -1) this.players.splice(pi,1);
             })
             socket.on("data", (data) => {
                 let bp = new BinaryParser(data);
@@ -107,7 +124,9 @@ class Server extends EventEmitter {
      * @param {Buffer} buffer
      */
     broadcast(buffer){
-        
+        for(let player of this.players){
+            player.send(buffer);
+        }
     }  
     //for documentation stuff
     /**

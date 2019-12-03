@@ -48,17 +48,19 @@ server.on("useitem",(player,slot)=>{
     player.sendEntity(new Arrow(player,++server.eid))
 });
 server.on("move",(player,x,y,f,d)=>{
-    console.log("moved",x,y,f,d)
+    //console.log("moved",x,y,f,d)
     player.x = x;
     player.y = y;
     player.f = f;
     player.r = d;
+    player.broadcast(player.moveDataFormat());
 })
 server.on("tick",(tn)=>{//run any important entity stepping requirements - do NOT do collision, it'd be expensive and a massive waste of time and effort
     server.entities.forEach(entity => entity.step());
 })
-server.on("error",(player)=>{
-    console.log("ow")
+server.on("error",(player,err)=>{
+    console.log("ow",err);
+    process.exit(1);
 })
 
 server.listen();
