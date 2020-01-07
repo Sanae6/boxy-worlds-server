@@ -1,4 +1,6 @@
 const net = require("./net/index");
+const Noise = require("noisejs");
+const noise = new Noise("123409457");
 const server = new net.Server();
 const Chunk = net.Chunk;
 const Box = net.Box;
@@ -16,19 +18,27 @@ let i = 0;
 function isEven(n){
     return n%2 == 0;
 }
-function checkerboard(x,y){
-    if ((isEven(y)&&!isEven(x))||(isEven(x)&&!isEven(y)))return new Box(1,x,y);
-    else return new Box(isEven(y)?0:2,x,y);
+function walledgardens(cx,cy,x,y){
+    if ((x<7 || x>8) && (y==0 || y==15) || (y<7 || y>8) && (x==0 || x==15))return new Box(1,x,y,true);
+    else return new Box(0,x,y,false);
+}
+//const smp = new Simplex("joe")
+function perlin(cx,cy,x,y){
+    let height = noise.perlin2((cx*16+x)/100,(cy*16+y)/100);
+    if (height < -0.1) return new Box(3,x,y,false);
+    if (height > -0.1 && height < 0.1) return new Box(0,x,y,false);
+    return new Box(1,x,y,(isEven(x) && !isEven(y))||(isEven(y) && !isEven(x)))
 }
 let x=-4;
 while (x<=4){
     let y=-4;
     while(y<=4){
-        chunks.set(x+","+y,new Chunk(x,y,checkerboard))
+        chunks.set(x+","+y,new Chunk(x,y,0,perlin))
         y++;
     }
     x++;
 }
+
 
 server.on("listen",(port)=>{
     console.log("Listening on port",port)
@@ -45,14 +55,14 @@ server.on("started",(player,dbg)=>{
 });
 server.on("useitem",(player,slot)=>{
     console.log(slot);
-    player.sendEntity(new Arrow(player,++server.eid))
+    server.addEntity(new Arrow(player,++server.eid))
 });
-server.on("move",(player,x,y,f,d)=>{
-    //console.log("moved",x,y,f,d)
+server.on("move",(player,x,y,f)=>{
+    console.log("moved",x,y,f)
     player.x = x;
     player.y = y;
     player.f = f;
-    player.r = d;
+    //player.setPos(0,0,0,0,0);
     player.broadcast(player.moveDataFormat());
 })
 server.on("tick",(tn)=>{//run any important entity stepping requirements - do NOT do collision, it'd be expensive and a massive waste of time and effort

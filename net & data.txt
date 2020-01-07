@@ -18,7 +18,7 @@ from server:
 		i64 = x
 		i64 = y
 		u8 = z
-		u8*(16^2) = boxes
+		u8*(16*2) = boxes
 		todo when implementing dynamic boxes:
 		u16 = instance style tile count
 		u8*n = arrays of data for instances
@@ -28,7 +28,6 @@ from server:
 		f64 = x
 		f64 = y
 		f64 = facing
-		f64 = rotation
 		i16 = health
 		str = name - if end of packet, it's ignored - do it later, its not there right now
 	entity move: 3
@@ -36,7 +35,6 @@ from server:
 		f64 = tox
 		f64 = toy
 		f64 = facing
-		f64 = rotation
 		i16 = health
 	kick: 4
 		u8 = is error 
@@ -51,7 +49,6 @@ from player:
 		f64 = x
 		f64 = y
 		i16 = image rotation
-		i16 = direction
 	login: 1
 		str = name
 		u8 = has password - used for secured saving - 
@@ -72,6 +69,9 @@ from player:
 		i64 = y
 	use item: 7 - uses the item
 		u8 = slot
+	place box: 8
+		i64 = x
+		i64 = y
 
 instance data: (for network transfer and server-side storage)
 	storage: 

@@ -35,7 +35,7 @@ class Player extends Entity{
     constructor(server,id,socket){
         super(0,irandom(server.spawn.x-server.spawn.r,
             server.spawn.x+server.spawn.r),irandom(server.spawn.y-server.spawn.r,
-                server.spawn.y+server.spawn.r),20,0,0,id,server);
+                server.spawn.y+server.spawn.r),0,20,0,id,server);
         /**
          * @name server
          * @type {Server}
@@ -79,19 +79,17 @@ class Player extends Entity{
      * 
      * @param {number} x 
      * @param {number} y
-     * @param {number} direction 
-     * @param {boolean} tp if the setPos is a move to location or a 
+     * @param {number} z
+     * @param {number} r rotation
+     * @param {number} f facing 
      */
-    setPos(x,y,direction,tp){
+    setPos(x,y,z,r,f){
         this.x = x;
         this.y = y;
-        let b = Buffer.alloc(27);
-        b.writeUInt16LE(3,0);
-        b.writeUInt8(tp?1:0,2);
-        b.writeDoubleLE(x,3);
-        b.writeDoubleLE(y,11);
-        b.writeDoubleLE(direction,19);
-        this.send(b);
+        this.z = z;
+        this.r = r;
+        this.f = f;
+        this.send(this.moveDataFormat());
     }
     
     /**
@@ -140,6 +138,7 @@ class Player extends Entity{
         let buffer = Buffer.alloc(b.length+2);
         buffer.writeInt16LE(0,b.length);
         b.copy(buffer,2,0,b.length);
+        //console.log(buffer,buffer.readInt16LE(2));
         this.socket.write(buffer);
     }
 

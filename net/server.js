@@ -40,13 +40,13 @@ class Server extends EventEmitter {
          * @type {SpawnObject}
          */
         this.spawn = options.spawn || {
-            x:0,y:0,r:200
+            x:256,y:256,r:0
         }
         this.eid = -1;
         this.tickNum = 0;
-        setInterval(() => {
-            this.emit("tick", this.tickNum++);
-        }, 1/60);
+        // setInterval(() => {
+        //     this.emit("tick", this.tickNum++);
+        // }, 1/60);
         this._server = net.createServer((socket) => {
             let player = new Player(this, ++this.eid, socket);
             this.players.push(player);
@@ -62,10 +62,10 @@ class Server extends EventEmitter {
             this.emit("player", player);
             socket.on("error",(err)=>{
                 console.error(err);
-                this.emit("error",player,err);
+                //this.emit("error",player,err);
             })
-            socket.on("close",(iserr)=>{
-                if (iserr) console.error("damn it do be like that sometimes");
+            socket.on("close",()=>{
+                //if (iserr) console.error("damn it do be like that sometimes");
                 console.error("well whatever seeya");
                 player.broadcast(player.destroyDataFormat())
                 let pi = this.players.indexOf(player);
@@ -76,10 +76,10 @@ class Server extends EventEmitter {
                 let len = bp.uint16();
                 //console.log(len);
                 let op = bp.uint16();
-                //console.log(op,op==7?"itemuse":"notitemuse");
+                //if (op != 0) console.log(op,op==7?"itemuse":"notitemuse");
                 switch (op) {
                     case 0://player movement
-                        this.emit("move", player, bp.double(), bp.double(), bp.int16(), bp.int16());
+                        this.emit("move", player, bp.double(), bp.double(), bp.int16());
                         break;
                     case 1://set name
                         this.emit("login", player, bp.string0(), bp.uint8()==1?bp.string0():false);
@@ -113,6 +113,10 @@ class Server extends EventEmitter {
                 }
             })
         })
+        this._server.on("error",(err)=>{
+            console.error(err);
+            this.emit("error",player,err);
+        })
     }
     listen(port = this.port) {
         this._server.listen(port, () => {
@@ -141,6 +145,13 @@ class Server extends EventEmitter {
     */
     on(...args) {
         super.on(...args);
+    }
+    /**
+     * @param {Entity} entity
+     */
+    addEntity(entity){
+        this.entities.push(entity);
+        this.broadcast(entity.createDataFormat())
     }
 }
 /**
