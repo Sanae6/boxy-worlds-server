@@ -32,26 +32,28 @@ class Entity{
     }
 
     createDataFormat(){
-        let da = Buffer.alloc(33)
+        let da = Buffer.alloc(34)
         da.fill(0,0)
         da.writeUInt16LE(2,0);
         da.writeUInt8(this.type,2);
         da.writeUInt32LE(this.id,3)
         da.writeDoubleLE(this.x,7);
         da.writeDoubleLE(this.y,15);
-        da.writeDoubleLE(this.f,23);
-        da.writeInt16LE(this.hp,31);
+        da.writeUInt8(this.z,23)
+        da.writeDoubleLE(this.f,24);
+        da.writeInt16LE(this.hp,32);
         console.log("creating",this.id,this.type)
         return da;
     }
     moveDataFormat(){
-        let da = Buffer.alloc(32);
+        let da = Buffer.alloc(33);
         da.writeUInt16LE(3,0);
         da.writeUInt32LE(this.id,2);
         da.writeDoubleLE(this.x,6);
         da.writeDoubleLE(this.y,14);
-        da.writeDoubleLE(this.f,22);
-        da.writeInt16LE(this.hp,30);
+        da.writeUInt8(this.z,22)
+        da.writeDoubleLE(this.f,23);
+        da.writeInt16LE(this.hp,31);
         //console.log("moving",this.id);
         return da;
     }

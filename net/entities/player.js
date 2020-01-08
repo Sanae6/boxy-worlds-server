@@ -35,7 +35,7 @@ class Player extends Entity{
     constructor(server,id,socket){
         super(0,irandom(server.spawn.x-server.spawn.r,
             server.spawn.x+server.spawn.r),irandom(server.spawn.y-server.spawn.r,
-                server.spawn.y+server.spawn.r),0,20,0,id,server);
+                server.spawn.y+server.spawn.r),1,20,0,id,server);
         /**
          * @name server
          * @type {Server}
@@ -53,6 +53,8 @@ class Player extends Entity{
          * stole this jsdoc from the 
          */
         this.sentChunks = new Map();
+        this.cx = Math.floor(this.x/512);
+        this.cy = Math.floor(this.y/512);
         let start = Buffer.alloc(10);
         start.writeInt16LE(this.x,2);
         start.writeInt16LE(this.y,4);
@@ -97,8 +99,20 @@ class Player extends Entity{
      * @param {Chunk} chunk 
      */
     sendChunk(chunk){
-        this.sentChunks.set(chunk.cx+","+chunk.cy,chunk);
+        if (this.sentChunks.has(chunk.cx+","+chunk.cy+","+chunk.cz))return// console.log("didnt send",chunk.cx+","+chunk.cy+","+chunk.cz);
+        //console.log("sent",chunk.cx+","+chunk.cy+","+chunk.cz);
+        this.sentChunks.set(chunk.cx+","+chunk.cy+","+chunk.cz,chunk);
         this.send(chunk.dataFormat());
+    }
+    /**
+     * 
+     * @param {Chunk} chunk 
+     */
+    destroyChunk(chunk){
+        if (!this.sentChunks.has(chunk.cx+","+chunk.cy+","+chunk.cz))return;
+        console.log("destroyed",chunk.cx,chunk.cy,chunk.cz,this.cx,this.cy,this.z);
+        this.sentChunks.delete(chunk.cx+","+chunk.cy+","+chunk.cz);
+        this.send(chunk.dataDestroy());
     }
 
     /**

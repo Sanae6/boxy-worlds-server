@@ -1,11 +1,11 @@
 const Box = require("./box");
-const MAX_UINT32 = 0xFFFFFFFF;
 /**
  * @callback init
  * @param {number} cx
  * @param {number} cy
  * @param {number} x
  * @param {number} y
+ * @param {number} z
  */
 /**
  * @class
@@ -36,7 +36,7 @@ class Chunk{
         this._tainted = true;//check if chunk data should be rebuilt
         this.te = [];//tile entities or dynamic boxes, boxes that are also instances basically
         if (typeof(initialize)!='function') initialize = this._defaultInit;
-        for(let x=0;x<16;x++)for(let y=0;y<16;y++)this.boxes.push(initialize(this.cx,this.cy,x,y));
+        for(let x=0;x<16;x++)for(let y=0;y<16;y++)this.boxes.push(initialize(this.cx,this.cy,x,y,cz));
     }
     _defaultInit(x,y){
         return new Box(1,x,y,false);
@@ -79,6 +79,7 @@ class Chunk{
     }
     dataDestroy(){
         let dest = Buffer.alloc(19);
+        dest.writeUInt16LE(7,0)
         dest.writeInt32LE(this.cx >> 8,2);
         dest.writeInt32LE(this.cx & 0xff,6);
         dest.writeInt32LE(this.cy >> 8,10);

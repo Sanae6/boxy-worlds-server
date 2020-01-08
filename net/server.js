@@ -96,11 +96,18 @@ class Server extends EventEmitter {
                         break;
                     case 5://starting 
                         bp.uint8();//serverside debug mode disable
-                        let dbg = false;
-                        if (dbg)setTimeout(()=>{
-                            this.emit("started",player,true);
-                        },500);
-                        else this.emit("started",player,false);
+                        switch(bp.uint8()){//client type
+                            case 0:
+                                player.name = bp.string(bp.uint8());
+                                let dbg = false;
+                                if (dbg)setTimeout(()=>{
+                                    this.emit("started",player,true);
+                                },500);
+                                else this.emit("started",player,false);
+                                break;
+                            default:
+                                socket.end();
+                        }
                         break;
                     case 6:
                         this.emit(bp.uint8()?"reqchunk":"delchunk",(bp.int32()<<8)|(bp.int32()&0xFF)
