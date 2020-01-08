@@ -18,7 +18,7 @@ class ChunkProvider{
      * @param {number} z 
      */
     getBlock(x,y,z){
-
+        this.getChunkAtPos(x,y,z).get(x%16,y%16)
     };
     /**
      * @returns {Chunk}
@@ -27,7 +27,7 @@ class ChunkProvider{
      * @param {number} z 
      */
     getChunk(x,y,z){
-
+        this.chunkMap.get(`${x},${y},${z}`);
     };
     /**
      * @returns {Chunk}
@@ -36,7 +36,7 @@ class ChunkProvider{
      * @param {number} z 
      */
     getChunkAtPos(x,y,z){
-        
+        this.getChunk(`${Math.floor(x/16)},${Math.floor(y/16)},${z}`);
     }
     /**
      * @param {Chunk} chunk 
@@ -44,14 +44,18 @@ class ChunkProvider{
      * @param {number} y 
      * @param {number} z 
      */
-    setChunk(chunk,x,y,z){}
+    setChunk(chunk,x,y,z){
+        this.chunkMap.set(`${x},${y},${z}`,chunk);
+    }
     /**
      * @returns {boolean}
      * @param {number} x 
      * @param {number} y 
      * @param {number} z 
      */
-    hasChunk(x,y,z)
+    hasChunk(x,y,z){
+        this.chunkMap.has(`${x},${y},${z}`);
+    }
 }
 
 module.exports = ChunkProvider

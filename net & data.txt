@@ -7,7 +7,7 @@ length u16
 opcode u16
 message n-sized size
 
-str = u16(len) + u8*len
+str = u8(len) + u8*len
 
 from server:
 	start: 0
@@ -44,6 +44,10 @@ from server:
 	entity destroy: 6 - destroyed the entity on serverside so destroy it on the clientside too
 		id = u32
 		killed = u8 - boolean: was killed or just disappeared - tells game whether to use memory for this
+	unloaded chunk: 7
+		i64 = x
+		i64 = y
+		u8 = z
 from player:
 	move: 0
 		f64 = x
@@ -63,10 +67,8 @@ from player:
 		str = reason
 	start: 5 - respond to the start from server
 		u8 = debug - used to check if player is in debug mode
-	unloaded chunk | request chunk: 6 - unload chunk | request chunk
-		u8 = is request - else unload
-		i64 = x
-		i64 = y
+		u8 = role - player/debugger/enemy agent
+		str = name
 	use item: 7 - uses the item
 		u8 = slot
 	place box: 8

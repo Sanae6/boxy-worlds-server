@@ -42,7 +42,15 @@ class Chunk{
         return new Box(1,x,y,false);
     }
     set(x,y,id){
-        this.boxes[x*y].id = id;
+        this.boxes[16*x+y].id = id;
+    }
+    /**
+     * @returns {Box}
+     * @param {number} x 
+     * @param {number} y 
+     */
+    get(x,y){
+        return this.boxes[16*x+y];
     }
     /**
      * a sendable buffer with the chunk data opcode, both x and y values, and the boxes with it.
@@ -68,6 +76,15 @@ class Chunk{
             }
         }
         return this.data;
+    }
+    dataDestroy(){
+        let dest = Buffer.alloc(19);
+        dest.writeInt32LE(this.cx >> 8,2);
+        dest.writeInt32LE(this.cx & 0xff,6);
+        dest.writeInt32LE(this.cy >> 8,10);
+        dest.writeInt32LE(this.cy & 0xff,14);
+        dest.writeUInt8(this.cz,18);
+        return dest;
     }
 }
 module.exports = Chunk
