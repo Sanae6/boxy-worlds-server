@@ -2,14 +2,17 @@
     "name": "blockserver",
     "description": "bruh",
     "author": {
-        "name": "Austin Taylor",
+        "name": "Sanae Kochiya",
         "url": "https://sanae6.ca",
         "email": "atmatm6000@outlook.com"
     },
     "dependencies": {
         "binary-buffer-parser": "2.1.1",
-        "nexe": "^3.3.2",
-        "noisejs": "^2.1.0"
+        "noisejs": "^2.1.0",
+        "messagepack": "1.1.10"
+    },
+    "devDependencies": {
+        "nexe": "^3.3.2"
     },
     "version": "1.0.0"
 }

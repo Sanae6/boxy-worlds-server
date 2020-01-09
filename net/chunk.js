@@ -1,4 +1,5 @@
 const Box = require("./box");
+const msg = require("messagepack");
 /**
  * @callback init
  * @param {number} cx
@@ -86,6 +87,21 @@ class Chunk{
         dest.writeInt32LE(this.cy & 0xff,14);
         dest.writeUInt8(this.cz,18);
         return dest;
+    }
+    saveFormat(){
+        let save = {
+            cx: this.cx,
+            cy: this.cy,
+            cz: this.cz,
+            boxtype: [],
+            boxwall: []
+        }
+        let i=0;
+        for(let box of this.boxes){
+            save.boxtype[i] = box.id;
+            save.boxwall[i++] = box.wall;
+        }
+        return msg.encode(save);
     }
 }
 module.exports = Chunk

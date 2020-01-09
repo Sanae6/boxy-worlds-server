@@ -110,12 +110,13 @@ class Server extends EventEmitter {
                         }
                         break;
                     case 6:
-                        this.emit(bp.uint8()?"reqchunk":"delchunk",(bp.int32()<<8)|(bp.int32()&0xFF)
-                        ,(bp.int32()<<8)|(bp.int32()&0xFF));
+                        //this.emit(bp.uint8()?"reqchunk":"delchunk",(bp.int32()<<8)|(bp.int32()&0xFF)
+                        //,(bp.int32()<<8)|(bp.int32()&0xFF));
                         break;
                     case 7:
                         console.log("used item");
-                        this.emit("useitem",player,bp.uint8());
+                        this.emit("useitem",player,bp.uint8(),(bp.int32()<<8)|(bp.int32()&0xFF)
+                            ,(bp.int32()<<8)|(bp.int32()&0xFF));
                         break;
                 }
             })

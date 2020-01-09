@@ -48,6 +48,10 @@ from server:
 		i64 = x
 		i64 = y
 		u8 = z
+	update block: 8
+		i64 = x
+		i64 = y
+		
 from player:
 	move: 0
 		f64 = x
@@ -71,9 +75,8 @@ from player:
 		str = name
 	use item: 7 - uses the item
 		u8 = slot
-	place box: 8
-		i64 = x
-		i64 = y
+		i64 = cursor x
+		i64 = cursor y
 
 instance data: (for network transfer and server-side storage)
 	storage: 

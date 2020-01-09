@@ -8,17 +8,22 @@ const {mkdirSync,writeFileSync,readFileSync,existsSync} = require("fs");
  * @name noiseLevels
  * @type {njs[]}
  */
-console.log(Noise,njs)
 let noiseLevels = [];
 for(let z=0;z<5;z++){
     noiseLevels[z] = new Noise();
 }
+function perlintwo(x,y,z){
+    return noiseLevels[z].perlin2(x,y);
+}
 function perlin(cx,cy,x,y,z){
-    if (noiseLevels[z] == undefined) console.log(z);
-    let height = noiseLevels[z].perlin2((cx*16+x)/100,(cy*16+y)/100);
-    if (height < -0.1) return new Box(3,x,y,true);
-    if (height > -0.1 && height < 0.1) return new Box(0,x,y,false);
-    return new Box(1,x,y,false)
+    return perlintwo((cx*16+x)/100,(cy*16+y)/100,z)
+        + 0.5 * perlintwo((cx*16+x)/100,(cy*16+y)/100,z)
+        + 0.5 * perlintwo((cx*16+x)/100,(cy*16+y)/100,z);
+}
+function irandom(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1)) + min; //The maximum is inclusive and the minimum is inclusive 
 }
 class MapProvider extends Provider{
     /**
@@ -47,7 +52,7 @@ class MapProvider extends Provider{
     generate(){
         for(var cx=-10;cx<10;cx++)for(var cy=-10;cy<10;cy++)for(var cz=0;cz<5;cz++){
             if (this.hasChunk(cx,cy,cz)) continue;
-            this.setChunk(new Chunk(cx,cy,cz,(cx,cy,x,y)=>{return this.perlin(cx,cy,x,y,cz)}));
+            this.setChunk(new Chunk(cx,cy,cz,(cx,cy,x,y)=>{return this.genBox(cx,cy,x,y,cz)}));
         }
     }
     /**
@@ -59,8 +64,13 @@ class MapProvider extends Provider{
      * @param {number} y 
      * @param {number} z
      */
-    perlin(cx,cy,x,y,z){
-        return perlin(cx,cy,x,y,z);
+    genBox(){
+        let height = perlin(cx,cy,x,y,z)
+        let box;
+        if (height < -0.1) box = new Box(3,x,y,true);
+        else if (height > -0.1 && height < 0.1) box = new Box(0,x,y,false);
+        else box = new Box(1,x,y,false);
+        return box;
     }
 }
 module.exports = MapProvider;

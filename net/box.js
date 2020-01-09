@@ -1,15 +1,8 @@
 /**
  * @class
  * @name Box
- * 
  */
 class Box{//object representation of a box
-    /**
-     * @member {number} id
-     * @member {number} x
-     * @member {number} y
-     * @member {boolean} wall
-     */
     /**
      * @constructor
      * @param {number} id 
@@ -18,24 +11,33 @@ class Box{//object representation of a box
      * @param {boolean} wall
      */
     constructor(id,x,y,wall){
-        Object.assign(this,{_id:id,x,y,wall});
-    }
-    /**
-     * @param {number} id
-     */
-    set id(id){
-        this._id = id;
-    }
-    get id(){
-        return this._id;
+        /**
+         * @name id
+         * @type {number}
+         */
+        this.id = id;
+        /**
+         * @name x
+         * @type {number}
+         */
+        this.x = x;
+        /**
+         * @name y
+         * @type {number}
+         */
+        this.y = y;
+        /**
+         * @name wall
+         * @type {boolean}
+         */
+        this.wall = wall;
     }
     /**
      * @param {number} num
      * @param {Buffer} b
      */
     data(num,b){
-        let ie = this._id;
-        b.writeUInt8(ie,num);
+        b.writeUInt8(this.id,num);
         b.writeUInt8(+this.wall,num+1)
     }
 }

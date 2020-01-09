@@ -16,8 +16,9 @@ server.on("started",(player,dbg)=>{
         });
     }
 });
-server.on("useitem",(player,slot)=>{
+server.on("useitem",(player,slot,bx,by)=>{
     console.log(slot);
+    provider.genBox
     server.addEntity(new Arrow(player,++server.eid))
 });
 server.on("move",(player,x,y,f)=>{
