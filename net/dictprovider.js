@@ -8,6 +8,7 @@ const {mkdirSync,writeFileSync,readFileSync,existsSync} = require("fs");
  * @name noiseLevels
  * @type {njs[]}
  */
+console.log(Noise,njs)
 let noiseLevels = [];
 for(let z=0;z<5;z++){
     noiseLevels[z] = new Noise();

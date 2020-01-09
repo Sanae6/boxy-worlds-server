@@ -31,8 +31,8 @@ server.on("move",(player,x,y,f)=>{
         player.cx = Math.floor(x/512);
         player.cy = Math.floor(y/512);
         player.sentChunks.forEach((chunk)=>{
-            if (!(chunk.cx > player.cx-5 && chunk.cx < player.cx+5)||
-                !(chunk.cy > player.cy-5 && chunk.cy < player.cy+5)){
+            if ((chunk.cx < player.cx-5 && chunk.cx > player.cx+5)||
+                (chunk.cy < player.cy-5 && chunk.cy > player.cy+5)){
                     //console.log(`${player.cx-7}<${chunk.cx}<${player.cx+7} - ${player.cy-7}<${chunk.cy}<${player.cy+7}`)
                     player.destroyChunk(chunk);
                 }

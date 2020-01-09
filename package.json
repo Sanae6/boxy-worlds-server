@@ -8,6 +8,7 @@
     },
     "dependencies": {
         "binary-buffer-parser": "2.1.1",
+        "nexe": "^3.3.2",
         "noisejs": "^2.1.0"
     },
     "version": "1.0.0"
