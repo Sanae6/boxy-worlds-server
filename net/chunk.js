@@ -45,6 +45,9 @@ class Chunk{
     set(x,y,id){
         this.boxes[16*x+y].id = id;
     }
+    toString(){
+        return `${this.cx},${this.cy},${this.cz}`
+    }
     /**
      * @returns {Box}
      * @param {number} x 
@@ -67,8 +70,6 @@ class Chunk{
             this.data.writeInt32LE(this.cy & 0xff,14);
             this.data.writeUInt8(this.cz,18);
             
-            //console.log(this.data);
-            
             let i=19;
             if (this.boxes.length != 256) throw new Error("LOL");
             for(let box of this.boxes){
@@ -86,6 +87,7 @@ class Chunk{
         dest.writeInt32LE(this.cy >> 8,10);
         dest.writeInt32LE(this.cy & 0xff,14);
         dest.writeUInt8(this.cz,18);
+        //console.log(dest);
         return dest;
     }
     saveFormat(){

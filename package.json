@@ -1,5 +1,5 @@
 {
-    "name": "blockserver",
+    "name": "bwserver",
     "description": "bruh",
     "author": {
         "name": "Sanae Kochiya",
@@ -7,12 +7,28 @@
         "email": "atmatm6000@outlook.com"
     },
     "dependencies": {
+        "async": "^3.1.0",
         "binary-buffer-parser": "2.1.1",
+        "cli-spinner": "^0.2.10",
+        "messagepack": "1.1.10",
         "noisejs": "^2.1.0",
-        "messagepack": "1.1.10"
+        "pkg": "^4.4.2"
     },
-    "devDependencies": {
-        "nexe": "^3.3.2"
+    "version": "1.0.0",
+    "bin": "index.js",
+    "scripts": {
+        "build": "node compile.js"
     },
-    "version": "1.0.0"
+    "pkg": {
+        "assets": [
+            "dworldgen.json",
+            "worldgen.schema.json",
+            "dsettings.json",
+            "structures/*.bwrom"
+        ],
+        "targets": [
+            "node12-win-x64"
+        ],
+        "build": true
+    }
 }

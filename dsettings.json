@@ -1,0 +1,7 @@
+{
+    "world-name": "world",
+    "port": "3000",
+    "saveMinutes": 5,
+    "generator": "default",
+    "_generator": "use a file following the specs at https://sanae6.ca/files/worldgen.json to create a generator"
+}

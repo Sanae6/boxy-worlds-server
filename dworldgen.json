@@ -1,0 +1,59 @@
+{
+    "$schema": ".\\worldgen.schema.json",
+    "boxes":[
+        "grass",
+        "sand",
+        "dirt",
+        "water",
+        "tree"
+    ],
+    "floorgens": [
+        {
+            "structures":[
+                {
+                    "name": "test",
+                    "file": "bope",
+                    "threshold": 0.3
+                }
+            ],
+            "biomes":[
+                {
+                    "name": "oshean",
+                    "threshold":0,
+                    "primary": "water",
+                    "primary_wall": true
+                },
+                {
+                    "name": "desert",
+                    "primary": "sand",
+                    "threshold": 0.1
+                },
+                {
+                    "name": "plains",
+                    "threshold":0.2,
+                    "primary": "grass",
+                    "primary_threshold": 0.3,
+                    
+                    "tertiaries": [
+                        {
+                            "box": "tree",
+                            "wall": true
+                        },
+                        {
+                            "box": "grass",
+                            "wall": false
+                        },
+                        {
+                            "box": "grass",
+                            "wall": false
+                        },
+                        {
+                            "box": "grass",
+                            "wall": false
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

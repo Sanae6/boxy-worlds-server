@@ -37,7 +37,7 @@ class Box{//object representation of a box
      * @param {Buffer} b
      */
     data(num,b){
-        b.writeUInt8(this.id,num);
+        b.writeUInt8(Math.abs(this.id),num);
         b.writeUInt8(+this.wall,num+1)
     }
 }

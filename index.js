@@ -1,25 +1,24 @@
-const net = require("./net/index");
-const server = new net.Server();
-const Chunk = net.Chunk;
-const Box = net.Box;
+const provider = new (require("./net/dictprovider"))("world");
+const Server = require("./net/server")
+const server = new Server({provider,isLocal: process.argv[2] == "local"});
+const Chunk = require("./net/chunk");
+const Box = require("./net/box");
 const Arrow = require("./net/entities/arrow")
-const provider = new (require("./net/dictprovider"))();
-
+console.log("Boxy Worlds Server v0.9");
 server.on("listen",(port)=>{
     console.log("Listening on port",port)
 });
 server.on("started",(player,dbg)=>{
     if (dbg)console.log("player is in debug mode");
-    for(let x=-5;x<=5;x++)for(let y=-5;y<=5;y++){
+    for(let x=-10;x<=10;x++)for(let y=-10;y<=10;y++){
         provider.requestChunk(x,y,1,(chunk)=>{
             player.sendChunk(chunk)
         });
     }
 });
 server.on("useitem",(player,slot,bx,by)=>{
-    console.log(slot);
-    provider.genBox
-    server.addEntity(new Arrow(player,++server.eid))
+    for(let x=-2;x<=1;x++)for(let y=-2;y<=1;y++)provider.setBlock(bx+x,by+y,player.z,{id:1,wall:false})
+    //server.addEntity(new Arrow(player,++server.eid))
 });
 server.on("move",(player,x,y,f)=>{
     //console.log("moved",x,y,f)
@@ -31,16 +30,18 @@ server.on("move",(player,x,y,f)=>{
     if (player.cx != Math.floor(x/512) || player.cy != Math.floor(y/512)){
         player.cx = Math.floor(x/512);
         player.cy = Math.floor(y/512);
+        //console.log(player.sentChunks.size)
         player.sentChunks.forEach((chunk)=>{
-            if ((chunk.cx < player.cx-5 && chunk.cx > player.cx+5)||
-                (chunk.cy < player.cy-5 && chunk.cy > player.cy+5)){
-                    //console.log(`${player.cx-7}<${chunk.cx}<${player.cx+7} - ${player.cy-7}<${chunk.cy}<${player.cy+7}`)
-                    player.destroyChunk(chunk);
+            if ((chunk.cx < player.cx-5 || chunk.cx > player.cx+5)||
+                (chunk.cy < player.cy-5 || chunk.cy > player.cy+5)){
+                    //console.log(chunk.cx,chunk.cy)
+                    //player.destroyChunk(chunk);
                 }
         });
-        for(let ix=player.cx-5;ix<=player.cx+5;ix++)for(let iy=player.cy-5;iy<=player.cy+5;iy++){
+        for(let ix=player.cx-10;ix<=player.cx+10;ix++)for(let iy=player.cy-10;iy<=player.cy+10;iy++){
             if (!player.sentChunks.has(ix+","+iy+","+player.z)){
                 provider.requestChunk(ix,iy,1,(chunk)=>{
+                    //console.log(chunk.cx,chunk.cy)
                     player.sendChunk(chunk)
                 });
             }

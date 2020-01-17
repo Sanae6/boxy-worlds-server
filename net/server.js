@@ -24,6 +24,8 @@ class Server extends EventEmitter {
      */
     constructor(options = {}) {
         super();
+        options.provider.server = this;
+        this.isLocal = options.isLocal;
         /**
          * @name entities
          * @type {Entity[]}
@@ -40,7 +42,7 @@ class Server extends EventEmitter {
          * @type {SpawnObject}
          */
         this.spawn = options.spawn || {
-            x:256,y:256,r:0
+            x:0,y:0,r:0
         }
         this.eid = -1;
         this.tickNum = 0;
@@ -50,6 +52,7 @@ class Server extends EventEmitter {
         this._server = net.createServer((socket) => {
             let player = new Player(this, ++this.eid, socket);
             this.players.push(player);
+            console.log("l",this.players.length)
             this.players.forEach(element => {
                 console.log(player.id,element.id)
                 if (player.id == element.id) return;
@@ -73,7 +76,7 @@ class Server extends EventEmitter {
             })
             socket.on("data", (data) => {
                 let bp = new BinaryParser(data);
-                let len = bp.uint16();
+                let len = bp.uint16();//unused
                 //console.log(len);
                 let op = bp.uint16();
                 //if (op != 0) console.log(op,op==7?"itemuse":"notitemuse");
@@ -114,7 +117,6 @@ class Server extends EventEmitter {
                         //,(bp.int32()<<8)|(bp.int32()&0xFF));
                         break;
                     case 7:
-                        console.log("used item");
                         this.emit("useitem",player,bp.uint8(),(bp.int32()<<8)|(bp.int32()&0xFF)
                             ,(bp.int32()<<8)|(bp.int32()&0xFF));
                         break;

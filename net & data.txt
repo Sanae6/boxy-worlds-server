@@ -49,8 +49,15 @@ from server:
 		i64 = y
 		u8 = z
 	update block: 8
-		i64 = x
-		i64 = y
+		i64 = cx
+		i64 = cy
+		u8 = z
+		u8 = x
+		u8 = y
+		u8 = id
+		u8 = wall
+	inventory map: 9 - sketchy shit, if someone's reading this, drop me a dm @Sanae#4092 on discord
+		
 		
 from player:
 	move: 0
@@ -84,4 +91,4 @@ instance data: (for network transfer and server-side storage)
 		items:
 			u8 = slot
 			u16 = item
-			
+	

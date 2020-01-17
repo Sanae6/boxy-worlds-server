@@ -1,0 +1,21 @@
+#include "winresrc.h"
+
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "FileDescription", "Boxy Worlds: Server Application"
+            VALUE "FileVersion", "1.0.0"
+            VALUE "InternalName", "bwserver.exe"
+            VALUE "LegalCopyright", "Copynorth Boxy Worlds(C) 2020"
+            VALUE "OriginalFilename", "bwserver.exe"
+            VALUE "ProductName", "Boxy Worlds Server"
+            VALUE "ProductVersion", "1.0.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END

@@ -1,28 +1,22 @@
 const Chunk = require("./chunk");
 const Box = require("./box");
-/**
- * @callback init
- * @param {number} cx
- * @param {number} cy
- * @param {number} x
- * @param {number} y
- */
-
 class ChunkProvider{
     constructor(generatorfn){
-        this.chunkMap = new Map();
         /**
-         * @name generatorfn
-         * @type {init}
+         * @name chunkMap
+         * @type {Map<string,Chunk>}
          */
-        this.generatorfn = generatorfn;
+        this.chunkMap = new Map();
     }
     /**
      * Generates the world (all chunks within range)
      */
     generate(){}
-    save(){}
-    load(){}
+    /**
+     * @returns {object} {x:num,y:num}
+     */
+    getSpawn(){}
+    getSettings(){}
     /**
      * @returns {Box}
      * @param {number} x 
@@ -30,7 +24,7 @@ class ChunkProvider{
      * @param {number} z 
      */
     getBlock(x,y,z){
-        return this.getChunkAtPos(x,y,z).get(x%16,y%16)
+        return this.getChunkAtPos(x,y,z).get(Math.abs(x<0?16+x:x)%16,Math.abs(y<0?16+y:y)%16);
     };
     /**
      * @returns {Chunk}
@@ -48,13 +42,15 @@ class ChunkProvider{
      * @param {number} z 
      */
     getChunkAtPos(x,y,z){
-        return this.getChunk(`${Math.floor(x/16)},${Math.floor(y/16)},${z}`);
+        return this.getChunk(Math.floor(x/16),Math.floor(y/16),z);
     }
     /**
      * @param {Chunk} chunk
+     * @returns {Chunk}
      */
     setChunk(chunk){
         this.chunkMap.set(`${chunk.cx},${chunk.cy},${chunk.cz}`,chunk);
+        return chunk;
     }
     /**
      * @returns {boolean}
@@ -68,10 +64,11 @@ class ChunkProvider{
     requestChunk(x,y,z,cb){
         if (this.hasChunk(x,y,z))cb(this.getChunk(x,y,z));
         else {
-            let chunk = new Chunk(x,y,z,(cx,cy,x,y)=>{return this.generatorfn(cx,cy,x,y,z)});
-            this.setChunk(chunk);
-            cb(chunk);
+            cb(this.genChunk(x,y,z));
         }
+    }
+    genBox(cx,cy,x,y,z){
+        return new Box(0,x,y,false);
     }
 }
 

@@ -105,17 +105,17 @@ class Player extends Entity{
         this.send(chunk.dataFormat());
     }
     /**
-     * 
+     * currently breaks the client, not sure why, but packets might not be properly lengthed or im reading too much 🤷‍♀️
      * @param {Chunk} chunk 
      */
     destroyChunk(chunk){
         if (!this.sentChunks.has(chunk.cx+","+chunk.cy+","+chunk.cz))return;
-        console.log("destroyed",chunk.cx,chunk.cy,chunk.cz,this.cx,this.cy,this.z);
         this.sentChunks.delete(chunk.cx+","+chunk.cy+","+chunk.cz);
         this.send(chunk.dataDestroy());
     }
 
     /**
+     * @deprecated lmao this was never used
      * @param {string} name
      */
     setName(name){
@@ -150,7 +150,7 @@ class Player extends Entity{
     send(b){
         if (this.socket.destroyed) return;
         let buffer = Buffer.alloc(b.length+2);
-        buffer.writeInt16LE(0,b.length);
+        buffer.writeUInt16LE(0,b.length);
         b.copy(buffer,2,0,b.length);
         //console.log(buffer,buffer.readInt16LE(2));
         this.socket.write(buffer);
