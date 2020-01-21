@@ -12,7 +12,7 @@ class Entity{
      * @param {number} id 
      * @param {Server} server
      */
-    constructor(type,x,y,z,health,facing,id,server){
+    constructor(type,x,y,z,health,facing,id,server,name){
         this.type = type;
         this.x = x;
         this.y = y;
@@ -22,6 +22,8 @@ class Entity{
         this.id = id;
         this.server = server;
         this._tainted = true;
+        this.name = name== undefined ? "" : name;
+        this.speed = 0;
     }
 
     /**
@@ -31,8 +33,13 @@ class Entity{
 
     }
 
+    moveFacing(){
+        this.x += this.speed * Math.cos(this.f * Math.PI / -180);
+        this.y += this.speed * Math.sin(this.f * Math.PI / -180);
+    }
+
     createDataFormat(){
-        let da = Buffer.alloc(34)
+        let da = Buffer.alloc(35)
         da.fill(0,0)
         da.writeUInt16LE(2,0);
         da.writeUInt8(this.type,2);
@@ -42,7 +49,10 @@ class Entity{
         da.writeUInt8(this.z,23)
         da.writeDoubleLE(this.f,24);
         da.writeInt16LE(this.hp,32);
-        console.log("creating",this.id,this.type)
+        da.writeUInt8(this.name == "",34)
+        if (this.name != ""){
+            return Buffer.concat([da,Buffer.from(this.name,"ascii")]);
+        }
         return da;
     }
     moveDataFormat(){

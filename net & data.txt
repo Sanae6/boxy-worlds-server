@@ -29,7 +29,9 @@ from server:
 		f64 = y
 		f64 = facing
 		i16 = health
-		str = name - if end of packet, it's ignored - do it later, its not there right now
+		u8 = has name
+		if has name:
+			str = name
 	entity move: 3
 		u32 = id
 		f64 = tox
@@ -56,7 +58,23 @@ from server:
 		u8 = y
 		u8 = id
 		u8 = wall
-	inventory map: 9 - sketchy shit, if someone's reading this, drop me a dm @Sanae#4092 on discord
+	inventory: 9
+		id = u32
+		u16 = size
+		list of items:
+			u8 = item id
+			u16 = item count
+			u8 = has name
+			if has name:
+				str = name
+	inventory update: 10
+		id = u32
+		slot = u16
+		u8 = item id
+		u16 = item count
+		u8 = has name
+		if has name:
+			str = name
 		
 		
 from player:
@@ -81,14 +99,23 @@ from player:
 		u8 = role - player/debugger/enemy agent
 		str = name
 	use item: 7 - uses the item
-		u8 = slot
+		u8 = item id
 		i64 = cursor x
 		i64 = cursor y
-
+	place box: 6
+		u8 = box
+		u8 = is entity (chest, crafting table, furnace)
+		i64 = x
+		i64 = y
+	attack entity: 8
+		u32 = id
+		u16 = health taken
 instance data: (for network transfer and server-side storage)
 	storage: 
 		u8 = size (zero means one slot, providing up to 256 slots)
 		items:
 			u8 = slot
-			u16 = item
-	
+			u16 = item  
+	chunks:
+		look at the code im not documenting this
+		encodes and decodes using msgpack

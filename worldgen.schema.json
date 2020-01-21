@@ -29,10 +29,18 @@
                                     "type":"string",
                                     "description": "The path to the bwrom file from the server's structures folder"
                                 },
+                                "divfactor":{
+                                    "type":"number",
+                                    "description": "Division factor of the coordinates for the perlin function"
+                                },
                                 "threshold":{
                                     "type":"number",
                                     "description": "Threshold at which the structure will appear in the world"
-                                }
+                                },
+								"distance":{
+									"type":"number",
+									"description": "The lowest possible chunk distance another structure of the same file name can be from the one being added"
+								}
                             }
                         }
                     },

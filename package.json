@@ -11,6 +11,8 @@
         "binary-buffer-parser": "2.1.1",
         "cli-spinner": "^0.2.10",
         "messagepack": "1.1.10",
+        "n-readlines": "^1.0.0",
+        "node-gameloop": "^0.1.4",
         "noisejs": "^2.1.0",
         "pkg": "^4.4.2"
     },

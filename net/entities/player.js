@@ -53,13 +53,13 @@ class Player extends Entity{
          * stole this jsdoc from the 
          */
         this.sentChunks = new Map();
+        this.entities = [];
         this.cx = Math.floor(this.x/512);
         this.cy = Math.floor(this.y/512);
         let start = Buffer.alloc(10);
         start.writeInt16LE(this.x,2);
         start.writeInt16LE(this.y,4);
         start.writeUInt32LE(id,6);
-        console.log(start);
         this.send(start);
         this.broadcast(this.createDataFormat());
     }
@@ -72,9 +72,8 @@ class Player extends Entity{
         kickme.writeUInt16LE(4,0);
         kickme.write(reason,2);
         kickme.writeUInt8(0,reason.length+2)
-        console.log(kickme);
         this.send(kickme);
-        this.socket.close();
+        this.socket.end();
     }
 
     /**
@@ -102,6 +101,7 @@ class Player extends Entity{
         if (this.sentChunks.has(chunk.cx+","+chunk.cy+","+chunk.cz))return// console.log("didnt send",chunk.cx+","+chunk.cy+","+chunk.cz);
         //console.log("sent",chunk.cx+","+chunk.cy+","+chunk.cz);
         this.sentChunks.set(chunk.cx+","+chunk.cy+","+chunk.cz,chunk);
+        if (chunk == undefined) throw new Error("Chunk is undefined!")
         this.send(chunk.dataFormat());
     }
     /**
@@ -129,7 +129,7 @@ class Player extends Entity{
      * @param {Entity} e
      */
     sendEntity(e){
-        if (intersectRect(this,e,1400,900))
+        if (intersectRect(this,e,1400,900) || !this.entities.includes(e))
         this.send(e.createDataFormat())
     }
 
@@ -150,12 +150,14 @@ class Player extends Entity{
     send(b){
         if (this.socket.destroyed) return;
         let buffer = Buffer.alloc(b.length+2);
-        buffer.writeUInt16LE(0,b.length);
+        buffer.writeInt16LE(0,b.length);
         b.copy(buffer,2,0,b.length);
         //console.log(buffer,buffer.readInt16LE(2));
         this.socket.write(buffer);
     }
 
-    
+    step(){
+        
+    }
 }
 module.exports = Player;

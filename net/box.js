@@ -40,6 +40,9 @@ class Box{//object representation of a box
         b.writeUInt8(Math.abs(this.id),num);
         b.writeUInt8(+this.wall,num+1)
     }
+    copy(){
+        return new Box(this.id,this.x,this.y,this.wall)
+    }
 }
 
 module.exports = Box;

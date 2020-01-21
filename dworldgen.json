@@ -13,7 +13,9 @@
                 {
                     "name": "test",
                     "file": "bope",
-                    "threshold": 0.3
+                    "divfactor": 50,
+                    "distance": 30,
+                    "threshold": 0.9
                 }
             ],
             "biomes":[
@@ -21,7 +23,7 @@
                     "name": "oshean",
                     "threshold":0,
                     "primary": "water",
-                    "primary_wall": true
+                    "primary_wall": false
                 },
                 {
                     "name": "desert",

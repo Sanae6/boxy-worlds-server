@@ -69,25 +69,22 @@ class Chunk{
             this.data.writeInt32LE(this.cy >> 8,10);
             this.data.writeInt32LE(this.cy & 0xff,14);
             this.data.writeUInt8(this.cz,18);
-            
-            let i=19;
             if (this.boxes.length != 256) throw new Error("LOL");
-            for(let box of this.boxes){
-                box.data(i++,this.data)
-                i++;
+            for(let i=0;i<256;i++){
+                this.boxes[i].data((i*2)+19,this.data);
             }
         }
         return this.data;
     }
     dataDestroy(){
         let dest = Buffer.alloc(19);
-        dest.writeUInt16LE(7,0)
+        dest.fill(0,0,dest.length);
+        dest.writeUInt16LE(7,0);
         dest.writeInt32LE(this.cx >> 8,2);
         dest.writeInt32LE(this.cx & 0xff,6);
         dest.writeInt32LE(this.cy >> 8,10);
         dest.writeInt32LE(this.cy & 0xff,14);
         dest.writeUInt8(this.cz,18);
-        //console.log(dest);
         return dest;
     }
     saveFormat(){

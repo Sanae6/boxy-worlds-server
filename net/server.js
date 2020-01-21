@@ -52,12 +52,6 @@ class Server extends EventEmitter {
         this._server = net.createServer((socket) => {
             let player = new Player(this, ++this.eid, socket);
             this.players.push(player);
-            console.log("l",this.players.length)
-            this.players.forEach(element => {
-                console.log(player.id,element.id)
-                if (player.id == element.id) return;
-                player.send(element.createDataFormat());
-            });
             /**
              * @event Server#player
              * @param {Player} player
@@ -102,6 +96,10 @@ class Server extends EventEmitter {
                         switch(bp.uint8()){//client type
                             case 0:
                                 player.name = bp.string(bp.uint8());
+                                this.players.forEach(element => {
+                                    if (player.id == element.id) return;
+                                    player.send(element.createDataFormat());
+                                });
                                 let dbg = false;
                                 if (dbg)setTimeout(()=>{
                                     this.emit("started",player,true);
@@ -113,8 +111,9 @@ class Server extends EventEmitter {
                         }
                         break;
                     case 6:
-                        //this.emit(bp.uint8()?"reqchunk":"delchunk",(bp.int32()<<8)|(bp.int32()&0xFF)
-                        //,(bp.int32()<<8)|(bp.int32()&0xFF));
+                        this.emit("placebox",player,bp.uint8(),bp.uint8(),
+                        (bp.int32()<<8)|(bp.int32()&0xFF)
+                        ,(bp.int32()<<8)|(bp.int32()&0xFF));
                         break;
                     case 7:
                         this.emit("useitem",player,bp.uint8(),(bp.int32()<<8)|(bp.int32()&0xFF)
@@ -127,6 +126,7 @@ class Server extends EventEmitter {
             console.error(err);
             this.emit("error",player,err);
         })
+        require("node-gameloop").setGameLoop(this.emit.bind(this,"tick"),1/60);
     }
     listen(port = this.port) {
         this._server.listen(port, () => {
